@@ -8,7 +8,7 @@ class WeatherStationAdmin(admin.ModelAdmin):
 
 class WeatherReportAdmin(admin.ModelAdmin):
     list_display = ('station', 'observation_time', 'temperature_celsius',
-        'wind_speed_kts', 'wind_direction', 'visibility_mi', 'cycle', 'sky_conditions')
+        'wind_speed_kts', 'wind_direction', 'visibility_mi', 'observation_cycle', 'sky_conditions')
     list_filter = ('station',)
     date_hierarchy = 'observation_time'
 
