@@ -1,3 +1,5 @@
+import datetime
+import urllib2
 from django.contrib.gis.db import models
 from metar.Metar import Metar # available from http://homepage.mac.com/wtpollard/Software/FileSharing4.html
 
@@ -26,6 +28,25 @@ class WeatherStation(models.Model):
         if self.name_override:
             return self.name_override
         return self.name
+
+    def update(self):
+        """Take into account a reasonable caching schedule, and always return the newest possible information.
+        As a general rule, NOAA will make new observations available once an hour. HOWEVER, at times SPECI (special updates)
+        or manual corrections will be issued. At this time, this library will only support hourly retrieval."""
+
+        last_hr = datetime.datetime.now() - datetime.timedelta(hours=1)
+        reports = WeatherReport.objects.filter(station=self, observation_time__gt=last_hr)
+        if reports:
+            report = reports[0]
+        else:
+            noaa_url = 'http://weather.noaa.gov/pub/data/observations/metar/stations/%s.TXT' % self.code
+            request = urllib2.Request(noaa_url, None)
+            response = urllib2.urlopen(request)
+            data = response.read().split('\n')[1] # NOAA includes a "real" timestamp as the first line of the response
+
+            report = WeatherReport(station=self, raw=data).save()
+
+        return report
 
     def __unicode__(self):
         return u'%s' % self.code
