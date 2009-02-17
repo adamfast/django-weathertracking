@@ -1,5 +1,6 @@
 import datetime
 import urllib2
+from dateutil import tz
 from django.contrib.gis.db import models
 from metar.Metar import Metar # available from http://homepage.mac.com/wtpollard/Software/FileSharing4.html
 
@@ -89,7 +90,7 @@ class WeatherReport(models.Model):
         "Populate all the denormalized data fields by using the metar class before saving."
         metar = self.get_metar_object()
 
-        self.observation_time = metar.time
+        self.observation_time = metar.time.replace(tzinfo=tz.gettz('UTC')) # provided in UTC, set that so it shows correctly later
         self.observation_cycle = metar.cycle
         self.observation_type = metar.type
         self.observation_mode = metar.mod
