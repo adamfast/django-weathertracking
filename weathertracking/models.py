@@ -99,13 +99,15 @@ class WeatherReport(models.Model):
         self.dewpoint_celsius = '%s' % metar.dewpt.value(units='c')
         self.dewpoint_fahrenheit = '%s' % metar.dewpt.value(units='f')
         self.visibility_mi = '%s' % metar.vis.value(units='MI')
-        self.wind_direction = '%s' % int(metar.wind_dir.value())
-        self.wind_compass = metar.wind_dir.compass()
+        if metar.wind_dir:
+            self.wind_direction = '%s' % int(metar.wind_dir.value())
+            self.wind_compass = metar.wind_dir.compass()
         if metar.wind_dir_from:
             self.wind_direction_from = '%s' % int(metar.wind_dir_from.value())
         if metar.wind_dir_to:
             self.wind_direction_to = '%s' % int(metar.wind_dir_to.value())
-        self.wind_speed_kts = '%s' % int(metar.wind_speed.value()) # metars will only return integers when using kts
+        if metar.wind_speed:
+            self.wind_speed_kts = '%s' % int(metar.wind_speed.value()) # metars will only return integers when using kts
         if metar.wind_gust:
             self.wind_speed_gust_kts = '%s' % int(metar.wind_gust.value())
         self.sky_conditions = '%s' % metar.sky_conditions()
