@@ -45,7 +45,7 @@ class WeatherStation(models.Model):
             response = urllib2.urlopen(request)
             data = response.read().split('\n')[1] # NOAA includes a "real" timestamp as the first line of the response
 
-            report = WeatherReport(station=self, raw=data).save()
+            report, created = WeatherReport.objects.get_or_create(station=self, raw=data)
 
         return report
 
