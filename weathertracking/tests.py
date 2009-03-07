@@ -23,12 +23,14 @@ class TestWeathertracking(TestCase):
         station = find_nearest_weather_station(office)
         self.failUnlessEqual(station.code, 'KLWC')
         self.failUnlessEqual('%s' % station.distance.mi, '4.89983560723')
+        self.failUnlessEqual('%s' % station.azimuth, '0.997126049313')
 
     def test_joplin_nearby(self):
         jln_best_buy = Point(-94.474030, 37.093610)
         station = find_nearest_weather_station(jln_best_buy)
         self.failUnlessEqual(station.code, 'KJLN')
         self.failUnlessEqual('%s' % station.distance.mi, '4.15055339462')
+        self.failUnlessEqual('%s' % station.azimuth, '5.8515987804')
 
     def test_lawrence_nearby_list(self):
         office = Point(-95.286830, 38.971330)
