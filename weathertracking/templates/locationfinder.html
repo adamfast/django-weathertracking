@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load weathertracking %}
+
+{% block content %}
+<form method='POST' action='/find-weather-locations/'>
+Location (will be geocoded): <input type='textbox' name='location'><br/>
+<input type='submit' value='Search'>
+</form>
+<hr>
+{% if location %}
+Searching for {{ location }}:<br/>
+Google returned {{ location_point.y }}, {{ location_point.x }}.<br/>
+<div id='{{ google.dom_id }}' style='width:600px;height:400px;'></div><br/>
+
+{% if weather_stations %}
+{% load weathertracking %}
+Nearby Weather Stations:<br/>
+<ul>
+{% for station in weather_stations %}
+  <li>{{ station }} {% if station.elevation %}(altitude {{ station.elevation|m_to_ft|floatformat:0 }} ft.) {% endif %}- {{ station.distance.mi|floatformat:2 }} mi @ {{ station.azimuth|rad_to_deg|floatformat:0 }} deg</li>
+{% endfor %}
+</ul>
+<br/>
+{% endif %}
+
+{% endif %}
+{% endblock %}
