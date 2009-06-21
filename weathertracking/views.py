@@ -16,7 +16,7 @@ def find_weather_stations(request):
     if request.method == 'POST':
         form = SearchForm(request.POST)
         if form.is_valid():
-            location = form.cleaned_data['location']
+            location = urllib.quote_plus(form.cleaned_data['location'])
             request_url = "http://maps.google.com/maps/geo?q=%s&output=%s&key=%s" % (location, "csv", settings.GOOGLE_MAPS_API_KEY)
             data = urllib.urlopen(request_url).read()
             dlist = data.split(',')
@@ -29,10 +29,10 @@ def find_weather_stations(request):
 
             if point:
                 marker = GMarker(point, request.POST['location'])
-                marker.add_event(GEvent('click', 'function() { geodjango.map_marker1.openInfoWindowHtml("%s") }' % request.POST['location']))
-        #        # the gis.maps.google.* stuff doesn't allow for ^^^^^ dynamic naming of these - with multiple points, it will be
-        #        # necessary to for loop through the points with your own counter (start from zero) and that should coincide with
-        #        # the template forloop counter being used - but by all means cross-check that every time to make sure it's right.
+                marker.add_event(GEvent('click', 'function() { geodjango.map_marker1.openInfoWindowHtml("%s") }' % form.cleaned_data['location']))
+                # the gis.maps.google.* stuff doesn't allow for ^^^^^ dynamic naming of these - with multiple points, it will be
+                # necessary to for loop through the points with your own counter (start from zero) and that should coincide with
+                # the template forloop counter being used - but by all means cross-check that every time to make sure it's right.
                 markers.append(marker)
 
                 weather_stations = find_nearest_weather_stations(point, qty=10)
@@ -50,7 +50,7 @@ def find_weather_stations(request):
                 map = GoogleMap(key=settings.GOOGLE_MAPS_API_KEY, markers=markers)
 
                 return render_to_response('locationfinder.html', {
-                    'location': location,
+                    'location': form.cleaned_data['location'],
                     'location_point': point,
                     'google': map,
                     'weather_stations': weather_stations,
