@@ -3,7 +3,8 @@
 
 {% block content %}
 <form method='POST' action='/find-weather-locations/'>
-Location (will be geocoded): <input type='textbox' name='location'><br/>
+{{ form.as_p }}
+<!-- Location (will be geocoded): <input type='textbox' name='location'><br/> -->
 <input type='submit' value='Search'>
 </form>
 <hr>
