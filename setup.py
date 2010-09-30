@@ -8,6 +8,7 @@ setup(
     version = "0.1",
     license = "BSD",
     packages = ["weathertracking"],
+    install_requires = ['metar', 'python-dateutil'],
     description = "App for getting current conditions.",
     classifiers = [
         "Programming Language :: Python",
