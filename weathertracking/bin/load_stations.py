@@ -29,7 +29,7 @@ def convert_faa_coordinate(value):
 
         return overall
     else:
-        return 0.0
+        return Decimal('0.0')
 
 def import_stations():
     reader = csv.reader(open(NOAA_FILE, 'rU'), delimiter=';', quoting=csv.QUOTE_MINIMAL)
